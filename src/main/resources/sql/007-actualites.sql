@@ -1,0 +1,1 @@
+ALTER TABLE actualites.users ADD COLUMN deleted BOOLEAN DEFAULT false;

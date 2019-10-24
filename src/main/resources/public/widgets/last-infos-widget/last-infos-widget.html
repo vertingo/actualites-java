@@ -1,0 +1,32 @@
+<div class="last-infos-widget widget">
+	<h1 class="widget-left-margin">
+		<span ng-click="widget.openConfig()" tooltip="actualites.widget.config" class="last-infos-config-button"></span>
+		<i18n>actualites.widget.title</i18n>
+	</h1>
+	
+	<ul class="row widget-left-margin">
+		<li class="widget-news" ng-repeat="info in widget.infos" ng-class="{ 'border': $last === false }">
+			<a ng-href="/actualites#/view/thread/[[info.thread_id]]/info/[[info._id]]"
+			tooltip="[[info.tooltip]]">
+				[[info.title]]
+			</a>
+			<span class="relative-date small-text">([[info.relativeDate]])</span>
+		</li>
+	
+		<li ng-if="widget.infos === undefined || widget.infos.length === 0"><i18n>actualites.widget.empty</i18n></li>
+	</ul>
+	
+	<lightbox show="widget.display.edition" on-close="widget.closeConfig()">
+		<h2><i18n>actualites.widget.config.title</i18n></h2>
+		<article class="twelve cell">
+			<div class="row">
+				<label class="four cell"><i18n>actualites.widget.config.nbr</i18n></label>
+				<select class="two cell" ng-options="n for n in widget.resultSizeValues" ng-model="widget.resultSize"></select>
+			</div>
+			<div class="row">
+				<button class="right-magnet" ng-click="widget.saveConfig()" translate content="actualites.widget.config.save"></button>
+				<button class="right-magnet cancel" ng-click="widget.closeConfig()" translate content="actualites.widget.config.cancel"></button>
+			</div>
+		</article>
+	</lightbox>
+</div>

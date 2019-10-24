@@ -1,0 +1,93 @@
+<div class="row">
+    <app-title>
+        <h1 data-reload class="cell no-opener">
+            <i class="actualites"></i>
+            <a href="#/default" ng-click="$event.stopPropagation()"><i18n>actualites.title</i18n>
+            </a> /
+            <span subtitle><i18n>thread.list.view</i18n></span>
+        </h1>
+    </app-title>
+    <div class="cell right-magnet">
+        <button ng-click="newThreadView()"><i18n>actualites.edition.thread.new</i18n></button>
+    </div>
+</div>
+<div class="row">
+    <div class="twelve cell">
+        <div class="vertical cards-list eleven centered twelve-mobile rigid-grid">
+            <div class="card four height-two" ng-repeat="thread in threads.editable()">
+
+                <div class="row">
+                    <div class="illustration" style="padding-bottom: 0;">
+
+                        <img skin-src="/img/illustrations/actualites-default.png" ng-if="!thread.icon" />
+                        <img ng-src="[[thread.icon]]?thumbnail=120x120" ng-if="thread.icon" />
+                    </div>
+                    <div>
+                        <h3>[[thread.display_title]]</h3>
+                        <strong class="row"><i18n>thread.owner</i18n>[[thread.username]]</strong>
+                    </div>
+                </div>
+                <div class="row" ng-init="thread.counterInfo = countInfoByThread(thread._id)">
+                    <div class="reduce-block-eight" ng-if="thread.counterInfo > 0">
+                        <em>[[thread.counterInfo]]<i18n>actualites.thread.thread.counter</i18n></em>
+                    </div>
+                    <div ng-if="thread.counterInfo === 0">
+                        <em><i18n>actualites.thread.empty.info</i18n></em>
+                    </div>
+                </div>
+
+                <check-tool ng-model="thread.selected" ng-click="$event.stopPropagation()"></check-tool>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="toggle-buttons" ng-class="{ hide: threads.selection().length === 0 }">
+    <div class="toggle">
+        <button ng-click="editSelectedThread()"
+                ng-if="threads.selection().length < 2 && allowForSelection('editThread')" >
+            <i18n> <i18n>edit</i18n></i18n>
+        </button>
+        <resource-right name="share" resource="threads.selection()" class="cell">
+            <button ng-click="display.showPanel = true">
+                <i18n>share</i18n>
+            </button>
+        </resource-right>
+        <resource-right name="deleteThread" resource="threads.selection()" class="cell">
+            <button ng-click="display.showConfirmRemove = true" >
+                <i18n>remove</i18n>
+            </button>
+        </resource-right>
+    </div>
+</section>
+
+<!-- Lightbox : Thread share -->
+<div ng-if="display.showPanel">
+    <lightbox show="display.showPanel" on-close="display.showPanel = false;">
+        <share-panel app-prefix="'actualites/thread'" resources="threads.selection()"></share-panel>
+    </lightbox>
+</div>
+
+<!-- Lightbox : Thread delete -->
+<div ng-if="display.showConfirmRemove">
+    <lightbox show="display.showConfirmRemove" on-close="display.showConfirmRemove = false">
+        <h2>[[translate(threads.selection().length > 1 ?
+            'actualites.editions.threads.delete.lightbox.title' :
+            'actualites.editions.thread.delete.lightbox.title')]]</h2>
+        <p>[[translate(threads.selection().length > 1 ?
+            'actualites.editions.threads.delete.lightbox.text' :
+            'actualites.editions.thread.delete.lightbox.text')]]</p>
+        <p>
+        <div class="warning">
+            <i18n>actualites.editions.thread.delete.warning.start</i18n>
+            <span ng-if="getInfosThreadsSelected() > 0 ">[[getInfosThreadsSelected()]]</span>
+            <i18n>actualites.editions.thread.delete.warning.end</i18n>
+        </div>
+        </p>
+        <div class="row">
+            <button ng-click="removeThreadSelection();display.showConfirmRemove = false;"
+                    class="right-magnet"><i18n>actualites.edition.infos.delete</i18n></button>
+            <input type="button" class="cancel right-magnet" i18n-value="cancel" ng-click="display.showConfirmRemove = false" />
+        </div>
+    </lightbox>
+</div>

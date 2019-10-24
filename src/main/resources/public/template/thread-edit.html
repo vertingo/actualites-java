@@ -1,0 +1,30 @@
+<div class="row">
+	<app-title>
+		<h1 data-reload class="cell no-opener"><i class="actualites"></i><i18n ng-click="openMainPage()">actualites.title</i18n></h1>
+	</app-title>
+</div>
+
+<h2 ng-if="currentThread._id === undefined"><i18n>thread.title.new</i18n></h2>
+<h2 ng-if="currentThread._id !== undefined"><i18n>thread.title.edit</i18n></h2>
+<article class="twelve cell">
+	<form ng-submit="saveThread()">
+		<div class="row rigid-grid">
+
+			<div class="two cell clip height-three three-mobile">
+				<image-select ng-model="currentThread.icon" default="/img/illustrations/actualites-default.png" thumbnails="[{ width: 290, height: 290 }]"></image-select>
+			</div>
+
+			<div class="margin-two height-two">
+				<div class="twelve cell horizontal-spacing">
+					<input type="text" class="twelve cell right-magnet" ng-model="currentThread.title" required i18n-placeholder="thread.title"/>
+				</div>
+			</div>
+
+			<div class="row bottom-locked">
+				<input type="submit" class="right-magnet" i18n-value="save" />
+				<input type="button" class="cancel right-magnet" i18n-value="cancel" ng-click="cancelEditThread()" />
+			</div>
+
+		</div>
+	</form>
+</article>

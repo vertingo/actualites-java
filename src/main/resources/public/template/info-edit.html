@@ -1,0 +1,52 @@
+<article  class="twelve cell"
+		  ng-class="{ expanded: info.expanded, important: info.is_headline }"
+		  style="max-height:100000px !important;">
+	<form>
+		<div class="three cell">
+			<div class="row">
+				<label><i18n>actualites.create.thread</i18n></label>
+			</div>
+			<div class="row">
+				<select
+						ng-init="currentInfo.thread = (currentInfo.thread) ? currentInfo.thread : threads.all[0]"
+						ng-options="thread as thread.title for thread in threads.writable() | orderBy:'title':false"
+						ng-model="info.thread" class="nine cell">
+				</select>
+			</div>
+			<label class="twelve cell">
+				<input ng-model="info.hasPublicationDate" type="checkbox"/>
+				<i18n>actualites.create.date.publish</i18n>
+			</label>
+			<div class="row" ng-show="info.hasPublicationDate">
+				<date-picker min-date="startDate" ng-model="info.publication_date" ng-change="showDate = true"></date-picker>
+			</div>
+			<label class="twelve cell">
+				<input ng-model="info.hasExpirationDate" type="checkbox"/>
+				<i18n>actualites.create.date.expire</i18n>
+			</label>
+			<div class="row" ng-show="info.hasExpirationDate">
+				<date-picker min-date="info.publication_date" ng-model="info.expiration_date" ng-change="checkMinExpirationDate(info); showDate = true"></date-picker>
+			</div>
+			<label class="twelve cell">
+				<input ng-model="info.is_headline" type="checkbox"/>
+				<i18n>actualites.set.as.headline</i18n>
+			</label>
+		</div>
+		<div class="nine cell">
+			<div class="row">
+				<input ng-model="info.title" type="text" class="twelve cell" i18n-placeholder="actualites.create.title" />
+			</div>
+			<div class="row">
+				<editor ng-model="info.content"></editor>
+			</div>
+			<div class="row">
+				<button ng-click="info.save();" class="right-magnet">
+					<i18n>actualites.edition.infos.save</i18n>
+				</button>
+				<button ng-click="cancelEditInfo(info)" class="right-magnet cancel">
+					<i18n>actualites.edition.infos.cancel</i18n>
+				</button>
+			</div>
+		</div>
+	</form>
+</article>

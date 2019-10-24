@@ -1,0 +1,1 @@
+INSERT INTO actualites.users VALUES ('1', 'user.personnel.deleted'), ('2', 'user.teacher.deleted'), ('3', 'user.student.deleted'), ('4', 'user.relative.deleted');

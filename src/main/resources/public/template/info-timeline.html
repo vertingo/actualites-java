@@ -1,0 +1,72 @@
+<div class="row">
+    <app-title>
+        <h1 data-reload class="cell">
+            <i class="actualites"></i>
+            <a href="#/default" ng-click="$event.stopPropagation()">
+                <i18n>actualites.title</i18n>
+            </a> /
+            <span subtitle><i18n>journal</i18n></span>
+        </h1>
+    </app-title>
+</div>
+<div class="nine centered twelve-mobile">
+    <div class="timeline-story vertical-spacing row" ng-if="infoTimeline.events.all.length > 0">
+        <div ng-repeat="event in infoTimeline.events.all" class="twelve cell event-row">
+            <div class="cell date-field">
+                <span class="label">
+                     <em class="metadata">
+                        [[formatDateLocale(event.created)]]
+                    </em>
+                </span>
+            </div>
+            <div class="event cell">
+                <div class="round" ng-class="getColorByEvent(event.eventname)"></div>
+            </div>
+            <article class="horizontal-spacing cell ten eleven-mobile event-description"
+                     ng-init="event.expanded = false"
+                     ng-class="{expanded: event.expanded}" preview>
+                <div class="mobile-label">
+                    <em class="metadata">
+                        [[formatDateLocale(event.created)]]
+                    </em>
+                </div>
+                <div class="row">
+                    <a href="/userbook/annuaire#[[event.user_id]]">[[event.username]]</a>
+                    <span>[[translate('actualites.journal.' + event.eventname)]]</span>
+                    <a class="right-magnet"
+                       ng-click="event.expanded = !event.expanded;"
+                       ng-if="event.title !== null && event.content !== null">
+                        <i18n ng-if="!event.expanded">actualites.journal.version.show</i18n>
+                        <i18n ng-if="event.expanded">close</i18n>
+                    </a>
+                </div>
+                <div class="vertical-spacing eleven centered"
+                     ng-if="event.title !== null && event.content !== null">
+                    <h2>[[event.title]]</h2>
+                    <div class="twelve cell" bind-html="event.content"></div>
+                    <button class="right-magnet"
+                            ng-click="restoreRevision(event)"
+                            ng-disabled="infoTimeline.content === event.content && infoTimeline.title === event.title">
+                        <i18n>version.restore</i18n>
+                    </button>
+                </div>
+            </article>
+            <check-tool ng-model="event.selected" ng-click="$event.stopPropagation()"
+                        ng-if="infoTimeline.allow('edit') && (event.title !== null && event.content !== null)"></check-tool>
+        </div>
+    </div>
+    <article ng-if="infoTimeline.events.all.length === 0">
+        <i18n>actualites.journal.empty</i18n>
+    </article>
+</div>
+<div class="toggle-buttons" ng-class="{ hide: infoTimeline.events.selection().length === 0 }">
+    <div class="row toggle">
+        <button ng-if="infoTimeline.events.selection().length === 1"
+                ng-click="restoreRevision(infoTimeline.events.selection()[0])"
+                ng-disabled="infoTimeline.content === infoTimeline.events.selection()[0].content && infoTimeline.title === infoTimeline.events.selection()[0].title">
+            <i18n>version.restore</i18n>
+        </button>
+        <button ng-if="infoTimeline.events.selection().length === 2"
+                ng-click="compareRevisions()"><i18n>compare</i18n></button>
+    </div>
+</div>

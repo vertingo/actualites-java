@@ -1,0 +1,33 @@
+﻿<div class="rigid-grid row">
+    <div class="cell one horizontal-spacing">
+        <img skin-src="/img/illustrations/actualites-default.png" ng-if="!info.thread.icon" />
+        <img ng-src="[[info.thread.icon]]?thumbnail=120x120" ng-if="info.thread.icon" />
+    </div>
+    <div class="margin-one">
+        <h2 style="margin: 0">[[info.title]]</h2>
+        <em class="cell metadata">
+            <i18n>actualites.info.label.author</i18n> <a
+                href="/userbook/annuaire#/[[info.owner]]">[[info.username]]</a>,
+            [[(info.publication_date ? formatDate(info.publication_date) : formatDateLocale(info.modified))]]
+            <span translate content="[[getState(info)]]"></span>
+        </em>
+    </div>
+</div>
+
+<article class="twelve cell vertical-spacing">
+    <div class="row">
+        <div class="twelve cell" bind-html="info.content"></div>
+    </div>
+
+    <div class="cell right-magnet" ng-if="info.allow('comment') || info.comments.length() > 0">
+        <a ng-click="info.displayCommentsLightbox = true;" ng-show="!info.displayCommentsLightbox">
+            <i18n>actualites.info.label.comments</i18n> ([[info.comments.all.length]])
+        </a>
+        <a ng-click="info.displayCommentsLightbox = false" ng-show="info.displayCommentsLightbox">
+            <i18n>actualites.info.label.comments.close</i18n>
+        </a>
+    </div>
+    <div class="row" ng-show="info.displayCommentsLightbox">
+        <container template="comments"></container>
+    </div>
+</article>

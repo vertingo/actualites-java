@@ -1,0 +1,18 @@
+<article class="row comment" ng-repeat="comment in info.comments.all">
+	<div class="lower-title">
+		<em>[[formatDate(comment.modified)]]</em>, <i18n>actualites.info.label.author</i18n>
+		<a href="/userbook/annuaire#/[[comment.owner]]"><span translate content="[[comment.username]]"></span></a>
+
+		<p>[[comment.comment]]</p>
+	</div>
+	<div ng-if="comment._id" class="right-magnet cell">
+		<a ng-if="canDeleteComment(info, comment)" ng-click="info.deleteComment(comment, $index)"><i18n>actualites.info.label.comments.supprimer</i18n></a>
+	</div>
+</article>
+
+<div ng-if="info.allow('comment')" class="row">
+	<textarea class="cell vertical-spacing" ng-model="info.newComment.comment"></textarea>
+	<button ng-click="postInfoComment(info)" class="right-magnet">
+		<i18n>actualites.info.label.comments.submit</i18n>
+	</button>
+</div>

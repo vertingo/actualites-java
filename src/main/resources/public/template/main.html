@@ -1,0 +1,204 @@
+<div class="row">
+    <div class="right-magnet cell">
+        <button ng-if="oneRight('contrib')" ng-click="createInfo()">
+            <i18n>actualites.edition.infos.create</i18n>
+        </button>
+    </div>
+    <app-title>
+        <h1 data-reload class="cell">
+            <i class="actualites"></i>
+            <i18n ng-click="openMainPage()">actualites.title</i18n>
+        </h1>
+    </app-title>
+</div>
+<lightbox show="display.infoRead" on-close="display.infoRead = false;">
+    <div ng-if="!notFound" class="row">
+        <container template="info-read" class="hash-magnet row"></container>
+    </div>
+    <div ng-if="notFound" class="row">
+        <container template="error"></container>
+    </div>
+</lightbox>
+<div class="row rigid-grid">
+    <div class="four cell side-col twelve-mobile">
+        <nav class="vertical half-stamps mobile-navigation" side-nav>
+            <div>
+                <a href="#/default">
+                    <article ng-click="switchSelectThread()"
+                             ng-class="{ selected: $location.path() === '/default'
+                        || $location.path().indexOf('/default') !== -1 }">
+                        <div></div>
+                        <div>
+                            <h3><i18n>actualites.threads.all</i18n></h3>
+                        </div>
+                    </article>
+                </a>
+            </div>
+            <div ng-repeat="thread in threads.all">
+                <a href="#/view/thread/[[thread._id]]">
+                    <article ng-click="switchSelectThread(thread)"
+                             ng-class="{ selected: $location.path() === '/view/thread/' + thread._id}">
+                        <div>
+                            <img skin-src="/img/illustrations/actualites-default.png" ng-if="!thread.icon" />
+                            <img ng-src="[[thread.icon]]?thumbnail=120x120" ng-if="thread.icon" />
+                        </div>
+                        <div>
+                            <h3>[[thread.title]]</h3>
+                        </div>
+                    </article>
+                </a>
+            </div>
+            <a class="classic-link cell" workflow="actualites.admin" ng-click="threadsView()">
+                <i18n>thread.list.view</i18n>
+            </a>
+        </nav>
+    </div>
+    <!--<section class="margin-four">-->
+    <section class="margin-four main-col">
+        <div class="twelve cell">
+            <container template="createInfo"></container>
+        </div>
+        <div class="twelve cell">
+            <div class="twelve tabs vertical-spacing-twice heading-tabs">
+                <header ng-class="{selected : !hasParam('filter')}" class="horizontal-spacing-twice">
+                    <a href="[['#' + $location.path()]]" class="horizontal-spacing">
+                        <span><i18n>filters.all</i18n></span>
+                    </a>
+                </header>
+                <header ng-class="{selected : findParam('filter') === ACTUALITES_CONFIGURATION.infoFilter.PUBLISHED}"
+                    ng-if="oneRight('contrib')" class="horizontal-spacing-twice">
+                    <a href="[['#' + $location.path() + '?filter=' + ACTUALITES_CONFIGURATION.infoFilter.PUBLISHED]]"
+                       class="horizontal-spacing">
+                        <span><i18n>filters.published</i18n></span>
+                    </a>
+                </header>
+                <header ng-class="{selected : findParam('filter') === ACTUALITES_CONFIGURATION.infoFilter.HEADLINE,
+                           disabled : displayedInfos.headlines.length === 0 }" class="horizontal-spacing-twice">
+                    <a ng-if="displayedInfos.headlines.length > 0"
+                       href="[['#' + $location.path() + '?filter=' + ACTUALITES_CONFIGURATION.infoFilter.HEADLINE]]"
+                       class="horizontal-spacing">
+                        <span><i18n>filters.headline</i18n></span>
+                    </a>
+                    <span class="horizontal-spacing" ng-if="displayedInfos.headlines.length === 0"><i18n>filters.headline</i18n></span>
+                </header>
+                <header ng-class="{'selected' : findParam('filter') === ACTUALITES_CONFIGURATION.infoFilter.DRAFT,
+                        'disabled' : displayedInfos.drafts.length === 0}"
+                    ng-if="oneRight('contrib')" class="horizontal-spacing-twice">
+                    <a href="[['#' + $location.path() + '?filter=' + ACTUALITES_CONFIGURATION.infoFilter.DRAFT]]"
+                       ng-if="displayedInfos.drafts.length > 0"
+                       class="horizontal-spacing">
+                        <span><i18n>filters.drafts</i18n></span>
+                    </a>
+                    <span class="horizontal-spacing" ng-if="displayedInfos.drafts.length === 0"><i18n>filters.drafts</i18n></span>
+                </header>
+                <header ng-class="{'selected' : findParam('filter') === ACTUALITES_CONFIGURATION.infoFilter.PENDING,
+                            'disabled': displayedInfos.pendings.length === 0}"
+                    ng-if="oneRight('submit')" class="horizontal-spacing-twice">
+                    <a href="[['#' + $location.path() + '?filter=' + ACTUALITES_CONFIGURATION.infoFilter.PENDING]]"
+                       ng-if="displayedInfos.pendings.length > 0"
+                       class="horizontal-spacing">
+                        <span>
+                            <i18n>filters.submitted.waiting</i18n>
+                            <i class="badge">[[displayedInfos.pendings.length]]</i>
+                        </span>
+                    </a>
+                    <span class="horizontal-spacing" ng-if="displayedInfos.pendings.length === 0"><i18n>filters.submitted.waiting</i18n></span>
+                </header>
+            </div>
+        </div>
+        <div class="twelve cell">
+            <div ng-if="display.emptyThread" class="row">
+                <h2><i18n>actualites.thread.empty</i18n></h2>
+            </div>
+            <div ng-if="findParam('filter') === ACTUALITES_CONFIGURATION.infoFilter.DRAFT
+                        || findParam('filter') === ACTUALITES_CONFIGURATION.infoFilter.PENDING
+                        || !hasParam('filter')">
+                <div
+                        ng-repeat="info in displayedInfos.all | filter:filterByThreads(true)">
+                    <div ng-if="!info.edit">
+                        <container template="infoView">
+                        </container>
+                    </div>
+                    <div ng-if="info.edit">
+                        <container template="infoEdit"></container>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="findParam('filter') !== ACTUALITES_CONFIGURATION.infoFilter.DRAFT
+                        && findParam('filter') !== ACTUALITES_CONFIGURATION.infoFilter.PENDING">
+                <h4 class="row">
+                    <i18n>this.week</i18n>
+                </h4>
+                <article ng-if="(displayedInfos.thisWeekInfos | filter:filterByThreads(false)).length === 0">
+                    <i18n>this.week.empty</i18n>
+                </article>
+                <div ng-repeat="info in displayedInfos.thisWeekInfos | filter:filterByThreads(false)">
+                    <div ng-if="!info.edit">
+                        <container
+                                template="infoView"
+                                id="/view/thread/[[info.thread_id]]/info/[[info._id]]">
+                        </container>
+                    </div>
+                    <div ng-if="info.edit">
+                        <container template="infoEdit"></container>
+                    </div>
+                </div>
+
+                <div ng-if="countByStatus(displayedInfos.beforeThisWeekInfos) > 0">
+                    <h4 class="row" ng-if="(displayedInfos.beforeThisWeekInfos | filter:filterByThreads(false) | limitTo:display.limit).length > 0">
+                        <i18n>before.this.week</i18n>
+                    </h4>
+                    <div ng-repeat="info in displayedInfos.beforeThisWeekInfos | filter:filterByThreads(false) | limitTo:display.limit">
+                        <div ng-if="!info.edit">
+                            <container
+                                    template="infoView"
+                                    id="/view/thread/[[info.thread_id]]/info/[[info._id]]">
+                            </container>
+                        </div>
+                        <div ng-if="info.edit">
+                            <container template="infoEdit"></container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<lightbox show="display.showConfirmRemove" on-close="display.showConfirmRemove = false">
+    <h2><i18n>actualites.editions.infos.delete.lightbox.title</i18n></h2>
+    <p><i18n>actualites.editions.infos.delete.lightbox.text</i18n></p>
+    <div class="row">
+        <button ng-click="removeCurrentInfo(); display.showConfirmRemove = false;"
+                class="right-magnet"><i18n>actualites.edition.infos.delete</i18n></button>
+        <input type="button" class="cancel right-magnet" i18n-value="cancel" ng-click="display.showConfirmRemove = false" />
+    </div>
+</lightbox>
+
+<div ng-if="infos.selection().length > 0">
+    <lightbox show="display.showInfoSharePanel" on-close="display.showInfoSharePanel = false; infos.selection()[0].selected = false;">
+        <div ng-class="{'read-only': allowForSelection('viewShare')}">
+            <share-panel app-prefix="'actualites/thread/' + infos.selection()[0].thread_id + '/info'" resources="infos.selection()" ></share-panel>
+        </div>
+    </lightbox>
+</div>
+
+
+<div class="toggle-buttons" ng-class="{ hide: infos.selection().length === 0 }">
+    <div class="row toggle">
+        <div ng-if="infos.selection().length === 1 && (allowForSelection('share') || allowForSelection('viewShare')) && getState(displayedInfos._selection[0]) !== 'actualites.edition.status.5'" class="cell">
+            <button ng-click="display.showInfoSharePanel = true"><i18n>share</i18n></button>
+        </div>
+        <button ng-if="infos.selection().length === 1 && allowForSelection('edit')" ng-click="editInfo(infos.selection()[0])">
+            <i18n>edit</i18n>
+        </button>
+        <button ng-click="unSubmitCurrentInfo()" ng-if="allowForSelection('unsubmit')"><i18n>unsubmit</i18n></button>
+        <button ng-click="infos.unpublish()" ng-if="allowForSelection('unpublish')"><i18n>unpublish</i18n></button>
+        <button ng-click="infos.submit()" ng-if="allowForSelection('submit')"><i18n>submit</i18n></button>
+        <button ng-click="publishCurrentInfo()" ng-if="allowForSelection('publish')"><i18n>publish</i18n></button>
+        <a href="#/info/[[infos.selection()[0]._id]]/timeline">
+            <button ng-if="allowForSelection('edit') && infos.selection().length === 1"><i18n>journal</i18n></button>
+        </a>
+        <button ng-click="display.showConfirmRemove = true" ng-if="allowForSelection('remove')"><i18n>remove</i18n></button>
+    </div>
+</div>

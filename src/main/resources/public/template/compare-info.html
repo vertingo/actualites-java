@@ -1,0 +1,64 @@
+<div class="row">
+    <app-title>
+        <h1 data-reload class="cell">
+            <i class="actualites"></i>
+            <a href="#/default" ng-click="$event.stopPropagation()">
+                <i18n>actualites.title</i18n>
+            </a> /
+            <span subtitle><i18n>journal</i18n></span>
+        </h1>
+    </app-title>
+</div>
+<div class="row">
+    <button class="cancel" ng-click="goBackToTimeline()">
+        <i18n>go.back</i18n>
+    </button>
+</div>
+<div class="row">
+    <div class="centered eleven compare row twelve-mobile">
+        <div class="horizontal-spacing cell six twelve-mobile">
+            <article class="cell twelve">
+                <div>
+                    <em class="metadata">
+                        <i18n>version.from</i18n>
+                        [[formatDateLocale(comparedVersions.originals.left.created)]]
+                        <i18n>version.by</i18n>
+                        <a href="/userbook/annuaire#[[comparedVersions.originals.left.user_id]]">
+                            [[comparedVersions.originals.left.username]]</a>
+                    </em>
+                    <div class="cell right-magnet twelve-mobile">
+                        <button ng-click="restoreRevision(comparedVersions.originals.left)"
+                                ng-disabled="infoTimeline.content === comparedVersions.originals.left.content
+                                && infoTimeline.title === comparedVersions.originals.left.title">
+                            <i18n>version.restore</i18n>
+                        </button>
+                    </div>
+                </div>
+                <h3>[[comparedVersions.originals.left.title]]</h3>
+                <div class="twelve" bind-html="comparedVersions.compared.left"></div>
+            </article>
+        </div>
+        <div class="horizontal-spacing cell six twelve-mobile">
+            <article class="cell twelve">
+                <div>
+                    <em class="metadata">
+                        <i18n>version.from</i18n>
+                        [[formatDateLocale(comparedVersions.originals.right.created)]]
+                        <i18n>version.by</i18n>
+                        <a href="/userbook/annuaire#[[comparedVersions.originals.right.user_id]]">
+                            [[comparedVersions.originals.right.username]]</a>
+                    </em>
+                    <div class="cell twelve-mobile right-magnet">
+                        <button ng-click="restoreRevision(comparedVersions.originals.right)"
+                                ng-disabled="infoTimeline.content === comparedVersions.originals.right.content
+                            && infoTimeline.title === comparedVersions.originals.right.title">
+                            <i18n>version.restore</i18n>
+                        </button>
+                    </div>
+                </div>
+                <h3>[[comparedVersions.originals.right.title]]</h3>
+                <div class="twelve" bind-html="comparedVersions.compared.right"></div>
+            </article>
+        </div>
+    </div>
+</div>

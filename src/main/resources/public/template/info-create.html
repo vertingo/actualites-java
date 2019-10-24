@@ -1,0 +1,65 @@
+<article class="row">
+	<form>
+		<div class="three cell">
+			<div class="row">
+				<label><i18n>actualites.create.thread</i18n></label>
+			</div>
+			<div class="row">
+				<select
+						ng-init="currentInfo.thread = (currentInfo.thread) ? currentInfo.thread : threads.all[0]"
+						ng-options="thread as thread.title for thread in threads.writable() | orderBy:'title':false"
+						ng-model="currentInfo.thread" class="nine cell">
+						</select>
+			</div>
+			<label class="twelve cell">
+				<input ng-model="currentInfo.hasPublicationDate" type="checkbox"/>
+				<i18n>actualites.create.date.publish</i18n>
+			</label>
+			<div class="row" ng-show="currentInfo.hasPublicationDate">
+				<date-picker past="true" min-date="startDate" exp="true" exp-object="currentInfo.expiration_date" ng-model="currentInfo.publication_date" ng-change="showDate = true"></date-picker>
+			</div>
+			<label class="twelve cell">
+				<input ng-model="currentInfo.hasExpirationDate" type="checkbox"/>
+				<i18n>actualites.create.date.expire</i18n>
+			</label>
+			<div class="row" ng-show="currentInfo.hasExpirationDate">
+				<date-picker min-date="currentInfo.publication_date" past="true" ng-model="currentInfo.expiration_date" ng-change="checkMinExpirationDate(currentInfo); showDate = true"></date-picker>
+			</div>
+			<label class="twelve cell">
+				<input ng-model="currentInfo.is_headline" type="checkbox"/>
+				<i18n>actualites.set.as.headline</i18n>
+			</label>
+		</div>
+		<div class="nine cell">
+			<div class="row">
+				<input
+						ng-model="currentInfo.title"
+						type="text"
+						class="twelve cell"
+						i18n-placeholder="actualites.create.title" />
+			</div>
+			<div class="row">
+				<editor ng-model="currentInfo.content"></editor>
+			</div>
+			<div class="row" ng-if="createInfoError">
+				<div class="warning">[[createInfoError]]</div>
+			</div>
+			<div class="row">
+				<div ng-if="currentInfo.thread !== undefined">
+					<button ng-click="saveSubmitted();" class="right-magnet" ng-if="currentInfo.allow('submit')">
+						<i18n>actualites.edition.infos.submit</i18n>
+					</button>
+					<button ng-click="savePublished();" class="right-magnet" ng-if="currentInfo.allow('publish')">
+						<i18n>actualites.edition.infos.publish</i18n>
+					</button>
+					<button ng-click="saveDraft();" class="right-magnet">
+						<i18n>actualites.edition.infos.save.draft</i18n>
+					</button>
+				</div>
+				<button ng-click="cancelCreateInfo();" class="right-magnet cancel" type="button">
+					<i18n>actualites.edition.infos.cancel</i18n>
+				</button>
+			</div>
+		</div>
+	</form>
+</article>
